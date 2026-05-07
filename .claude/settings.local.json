@@ -1,0 +1,7 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "echo \"$(pwd | sed 's|.*/||') | $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'no-git') | $CLAUDE_MODEL\""
+  },
+  "outputStyle": "default"
+}
