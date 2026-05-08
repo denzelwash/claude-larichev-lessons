@@ -13,12 +13,19 @@
       "Bash(npx dotenv *)",
       "Bash(node -e \"require\\('dotenv'\\).config\\({path:'../../.env'}\\); const {execSync}=require\\('child_process'\\); execSync\\('npx prisma migrate dev --name add_category', {stdio:'inherit', env:process.env}\\)\")",
       "Bash(curl -s http://localhost:3000/health)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(claude --version)",
+      "Bash(npx @anthropic-ai/claude-code --version)",
+      "Bash(curl -s http://localhost:17915/)",
+      "Bash(awk '{print $2}')",
+      "Read(//tmp/**)",
+      "Bash(python3 *)",
+      "Skill(update-config)"
     ]
   },
   "statusLine": {
     "type": "command",
-    "command": "echo \"$(pwd | sed 's|.*/||') | $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'no-git') | $CLAUDE_MODEL\""
+    "command": "bash /c/Users/user/.claude/statusline.sh"
   },
   "outputStyle": "default"
 }
