@@ -8,5 +8,6 @@ import { CategoriesRepository } from './categories.repository';
   imports: [CqrsModule],
   controllers: [CategoriesController],
   providers: [CategoriesService, CategoriesRepository],
+  exports: [CategoriesRepository],
 })
 export class CategoriesModule {}
