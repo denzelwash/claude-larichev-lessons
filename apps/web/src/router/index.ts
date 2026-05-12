@@ -22,6 +22,16 @@ export const router = createRouter({
       component: () => import('@/pages/register').then((m) => m.RegisterPage),
       meta: { guest: true },
     },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('@/pages/terms').then((m) => m.TermsPage),
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('@/pages/privacy').then((m) => m.PrivacyPage),
+    },
   ],
 });
 

@@ -12,6 +12,7 @@ const form = ref<{ name: string; email: string; password: string }>({
   password: '',
 });
 const formRef = ref<{ validate: () => Promise<{ valid: boolean }> } | null>(null);
+const agreed = ref(false);
 
 const nameRules = [
   (v: string) => !!v || 'Введите имя',
@@ -45,8 +46,8 @@ async function onSubmit() {
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="5">
         <v-card elevation="4">
-          <v-card-title class="text-h5 pa-6 pb-2">Регистрация</v-card-title>
-          <v-card-text>
+          <v-card-title class="text-h5 px-6 pt-6 pb-1">Регистрация</v-card-title>
+          <v-card-text class="px-6 pt-4 pb-2">
             <v-alert
               v-if="auth.error"
               type="error"
@@ -63,7 +64,8 @@ async function onSubmit() {
                 label="Имя"
                 :rules="nameRules"
                 variant="outlined"
-                class="mb-2"
+                density="comfortable"
+                class="mb-3"
                 autocomplete="name"
               />
               <v-text-field
@@ -72,7 +74,8 @@ async function onSubmit() {
                 type="email"
                 :rules="emailRules"
                 variant="outlined"
-                class="mb-2"
+                density="comfortable"
+                class="mb-3"
                 autocomplete="email"
               />
               <v-text-field
@@ -81,9 +84,25 @@ async function onSubmit() {
                 type="password"
                 :rules="passwordRules"
                 variant="outlined"
-                class="mb-4"
+                density="comfortable"
                 autocomplete="new-password"
               />
+              <v-checkbox
+                v-model="agreed"
+                :rules="[(v: boolean) => v || 'Необходимо принять соглашение']"
+                density="compact"
+                hide-details="auto"
+                class="mt-1 mb-4"
+              >
+                <template #label>
+                  <span class="text-body-2">
+                    Согласен с
+                    <a href="/terms" target="_blank" @click.stop style="text-decoration: underline">пользовательским соглашением</a>
+                    и
+                    <a href="/privacy" target="_blank" @click.stop style="text-decoration: underline">политикой обработки данных</a>
+                  </span>
+                </template>
+              </v-checkbox>
               <v-btn
                 type="submit"
                 color="primary"
@@ -95,7 +114,7 @@ async function onSubmit() {
               </v-btn>
             </v-form>
           </v-card-text>
-          <v-card-actions class="justify-center pb-4">
+          <v-card-actions class="justify-center py-4">
             <span class="text-body-2 text-medium-emphasis">Уже есть аккаунт?</span>
             <RouterLink to="/login" class="ml-1 text-body-2">Войти</RouterLink>
           </v-card-actions>

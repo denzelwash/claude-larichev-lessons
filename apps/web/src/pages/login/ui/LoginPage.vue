@@ -36,8 +36,8 @@ async function onSubmit() {
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="5">
         <v-card elevation="4">
-          <v-card-title class="text-h5 pa-6 pb-2">Вход</v-card-title>
-          <v-card-text>
+          <v-card-title class="text-h5 px-6 pt-6 pb-1">Вход</v-card-title>
+          <v-card-text class="px-6 pt-4 pb-2">
             <v-alert
               v-if="auth.error"
               type="error"
@@ -55,7 +55,8 @@ async function onSubmit() {
                 type="email"
                 :rules="emailRules"
                 variant="outlined"
-                class="mb-2"
+                density="comfortable"
+                class="mb-3"
                 autocomplete="email"
               />
               <v-text-field
@@ -64,7 +65,7 @@ async function onSubmit() {
                 type="password"
                 :rules="passwordRules"
                 variant="outlined"
-                class="mb-4"
+                density="comfortable"
                 autocomplete="current-password"
               />
               <v-btn
@@ -73,12 +74,13 @@ async function onSubmit() {
                 :loading="auth.loading"
                 block
                 size="large"
+                class="mt-4"
               >
                 Войти
               </v-btn>
             </v-form>
           </v-card-text>
-          <v-card-actions class="justify-center pb-4">
+          <v-card-actions class="justify-center py-4">
             <span class="text-body-2 text-medium-emphasis">Нет аккаунта?</span>
             <RouterLink to="/register" class="ml-1 text-body-2">Зарегистрироваться</RouterLink>
           </v-card-actions>
