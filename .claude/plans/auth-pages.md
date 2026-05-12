@@ -1,324 +1,124 @@
 # Фронтенд страниц логина и регистрации (Vuetify + FSD)
 
 ## Context
-Нужно реализовать страницы входа и регистрации на фронтенде. Бэкенд готов (NestJS + JWT, эндпоинты `POST /auth/register`, `POST /auth/login`, `GET /auth/me`). UI-библиотека — оставляем **Vuetify 3** (уже подключена). Архитектура переводится на **Feature Slice Design (FSD)**. Задача охватывает: реструктуризацию `src/` под FSD, auth store на Pinia, axios-клиент, роутер с гардами, две формы с валидацией на компонентах Vuetify.
+
+Бэкенд авторизации готов (см. `.claude/plans/auth.md`): `POST /auth/register`, `POST /auth/login`, `GET /auth/me` с JWT. Фронтенд (`apps/web`) сейчас содержит одну заглушку `HomeView.vue`, Vuetify подключена, Pinia/Router инициализированы, stores/ и components/ пусты.
+
+Цель — реализовать страницы входа и регистрации, подключить auth store на Pinia, настроить роутер с гардами и перевести структуру `src/` на **Feature Slice Design (FSD)**. UI-библиотека — Vuetify 3 (уже подключена, не меняем).
+
+## Статус: ✅ Выполнено (12.05.2026)
+
+## Чек-лист задач
+
+### 1. Зависимости
+- [x] `npm install axios -w apps/web` — HTTP-клиент для вызовов API
+
+### 2. Конфиги
+- [x] `apps/web/vite.config.ts` — добавить алиас `@app/shared` → `../../packages/shared/src/index.ts`
+- [x] `apps/web/tsconfig.json` — добавить путь `"@app/shared": ["../../packages/shared/src/index.ts"]`
+
+### 3. Shared (`apps/web/src/shared/`)
+- [x] `shared/api/http.ts` — axios-инстанс с `baseURL: VITE_API_URL`, Bearer-interceptor из `localStorage`
+- [x] `shared/types/index.ts` — реэкспорт `PublicUser`, `JwtPayload`, `AuthResponseDto` из `@app/shared`
+
+### 4. Feature Auth (`apps/web/src/features/auth/`)
+- [x] `features/auth/api/authApi.ts` — функции `loginApi`, `registerApi`, `getMeApi` через `http`
+- [x] `features/auth/model/store.ts` — Pinia store: `user`, `token`, `loading`, `error`; actions: `loginAction`, `registerAction`, `fetchMe`, `logout`
+- [x] `features/auth/index.ts` — публичный barrel: `useAuthStore`, `LoginDto`, `RegisterDto`
+
+### 5. Pages (`apps/web/src/pages/`)
+- [x] `pages/login/ui/LoginPage.vue` — форма входа (email + пароль, валидация, v-alert при ошибке, ссылка на /register)
+- [x] `pages/login/index.ts` — barrel-экспорт `LoginPage`
+- [x] `pages/register/ui/RegisterPage.vue` — форма регистрации (имя + email + пароль, валидация, ссылка на /login)
+- [x] `pages/register/index.ts` — barrel-экспорт `RegisterPage`
+- [x] `pages/home/ui/HomePage.vue` — главная: приветствие с именем пользователя + кнопка «Выйти»
+- [x] `pages/home/index.ts` — barrel-экспорт `HomePage`
+
+### 6. App
+- [x] `src/app/App.vue` — перенос `src/App.vue` (сохраняем `v-app` / `v-main`)
+- [x] `src/main.ts` — поменять импорт `App` на `./app/App.vue`
+
+### 7. Router (`apps/web/src/router/index.ts`)
+- [x] Маршруты `/`, `/login`, `/register` с lazy-import через barrel-экспорты pages
+- [x] `meta: { requiresAuth: true }` для `/`, `meta: { guest: true }` для `/login` и `/register`
+- [x] `router.beforeEach` — восстановить пользователя из токена (`fetchMe`), применить гарды
+
+### 8. Удалить старые файлы
+- [x] `src/App.vue` — заменён `src/app/App.vue`
+- [x] `src/views/HomeView.vue` — заменён `src/pages/home/ui/HomePage.vue`
+- [x] `src/stores/.gitkeep`
+- [x] `src/components/.gitkeep`
+
+### 9. CLAUDE.md
+- [x] Обновить описание `apps/web` (FSD, алиас `@app/shared`)
+- [x] Добавить секцию **Frontend Architecture (FSD)**
+- [x] Исправить конвенции (авторизация теперь реализована)
+
+### 10. Верификация ✅ все прошли
+- [x] `npm install` из корня — подтянул `axios`
+- [x] `npm run dev:api` — бэк на :3000
+- [x] `npm run dev:web` — фронт на :5173
+- [x] `/` без токена → редирект на `/login`
+- [x] Регистрация с валидными данными → редирект на `/`, имя в шапке
+- [x] Кнопка «Выйти» → `/login`
+- [x] Логин с теми же данными → `/`
+- [x] Перезагрузка страницы → пользователь восстановлен через `GET /auth/me`
+- [x] Открыть `/login` авторизованным → редирект на `/`
+- [x] `npm -w apps/web run build` — ноль ошибок TypeScript
 
 ---
 
-## Изменения пакетов (`apps/web`)
-
-```powershell
-# Из корня монорепо. Vuetify / @mdi/font / vite-plugin-vuetify НЕ трогаем.
-npm install axios -w apps/web
-```
-
----
-
-## Итоговая структура `apps/web/src/`
+## Структура новых файлов
 
 ```
-src/
-  main.ts                        ← MODIFY (импорт App из app/, без других изменений)
-  assets/main.css                ← без изменений
-  app/
-    App.vue                      ← NEW (перенос из src/App.vue, оставляем v-app/v-main)
-  router/
-    index.ts                     ← MODIFY (новые маршруты + auth-гарды)
-  shared/
-    api/
-      http.ts                    ← NEW (axios-инстанс + interceptor токена)
-    types/
-      index.ts                   ← NEW (реэкспорт из @app/shared)
-  features/
-    auth/
-      api/
-        authApi.ts               ← NEW (вызовы /auth/login, /auth/register, /auth/me)
-      model/
-        store.ts                 ← NEW (Pinia auth store)
-      index.ts                   ← NEW (публичное API фичи)
-  pages/
-    login/
-      ui/LoginPage.vue           ← NEW (Vuetify-форма)
-      index.ts                   ← NEW
-    register/
-      ui/RegisterPage.vue        ← NEW (Vuetify-форма)
-      index.ts                   ← NEW
-    home/
-      ui/HomePage.vue            ← NEW (перенос из views/HomeView.vue + кнопка выхода)
-      index.ts                   ← NEW
+apps/web/src/
+├── main.ts                              (modify: импорт App из app/)
+├── app/
+│   └── App.vue                          (new: перенос с v-app/v-main)
+├── router/
+│   └── index.ts                         (modify: маршруты + гарды)
+├── shared/
+│   ├── api/
+│   │   └── http.ts                      (new: axios + interceptor)
+│   └── types/
+│       └── index.ts                     (new: реэкспорт @app/shared)
+├── features/
+│   └── auth/
+│       ├── api/authApi.ts               (new)
+│       ├── model/store.ts               (new: Pinia store)
+│       └── index.ts                     (new: barrel)
+└── pages/
+    ├── login/
+    │   ├── ui/LoginPage.vue             (new)
+    │   └── index.ts
+    ├── register/
+    │   ├── ui/RegisterPage.vue          (new)
+    │   └── index.ts
+    └── home/
+        ├── ui/HomePage.vue              (new)
+        └── index.ts
 ```
 
-**Удалить:**
-- `src/App.vue` → заменён `src/app/App.vue`
-- `src/views/HomeView.vue` → заменён `src/pages/home/ui/HomePage.vue`
-- `src/stores/.gitkeep`
-- `src/components/.gitkeep`
-
----
-
-## Принципы FSD (для CLAUDE.md)
+## FSD — правило импортов
 
 Слои (снизу вверх): `shared` → `entities` → `features` → `widgets` → `pages` → `app`.
-Импортировать можно только из своего слоя и более низких. Внутри слоя — через публичный `index.ts` сегмента (`features/auth/index.ts`), не лезть в `model/`, `api/`, `ui/` напрямую снаружи.
+Слой импортирует только из более низких слоёв. Внутри слоя — только через публичный `index.ts` сегмента, не напрямую в `model/`, `api/`, `ui/`.
 
----
+## Auth store — контракт
 
-## Детали реализации
+| Поле / Action | Тип | Описание |
+| --- | --- | --- |
+| `user` | `PublicUser \| null` | текущий пользователь |
+| `token` | `string \| null` | JWT из localStorage |
+| `loading` | `boolean` | идёт запрос |
+| `error` | `string \| null` | последняя ошибка |
+| `loginAction(dto)` | `Promise<void>` | логин → сохранить токен → `fetchMe` |
+| `registerAction(dto)` | `Promise<void>` | регистрация → сохранить токен → `fetchMe` |
+| `fetchMe()` | `Promise<void>` | `GET /auth/me` → записать `user` |
+| `logout()` | `void` | очистить `user`, `token`, localStorage |
 
-### `vite.config.ts` — MODIFY (добавить алиас на shared, Vuetify-плагин не трогаем)
-```typescript
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vuetify from 'vite-plugin-vuetify'
-import { fileURLToPath, URL } from 'node:url'
+## Переиспользуемые элементы
 
-export default defineConfig({
-  plugins: [vue(), vuetify({ autoImport: true })],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@app/shared': fileURLToPath(new URL('../../packages/shared/src/index.ts', import.meta.url)),
-    },
-  },
-  server: { port: Number(process.env.WEB_PORT ?? 5173) },
-})
-```
-
-### `tsconfig.json` — MODIFY (добавить путь)
-```json
-"paths": {
-  "@/*": ["src/*"],
-  "@app/shared": ["../../packages/shared/src/index.ts"]
-}
-```
-
-### `src/main.ts` — MODIFY (Vuetify остаётся; меняется только путь до App)
-```typescript
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { createVuetify } from 'vuetify'
-import 'vuetify/styles'
-import '@mdi/font/css/materialdesignicons.css'
-import './assets/main.css'
-import App from './app/App.vue'
-import { router } from './router'
-
-const vuetify = createVuetify()
-
-createApp(App).use(createPinia()).use(router).use(vuetify).mount('#app')
-```
-
-### `src/app/App.vue` — NEW (перенос текущего App.vue)
-```vue
-<template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <RouterView />
-      </v-container>
-    </v-main>
-  </v-app>
-</template>
-```
-
-### `src/router/index.ts` — MODIFY
-```typescript
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/features/auth'
-
-export const router = createRouter({
-  history: createWebHistory(),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('@/pages/home').then(m => m.HomePage),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/pages/login').then(m => m.LoginPage),
-      meta: { guest: true },
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('@/pages/register').then(m => m.RegisterPage),
-      meta: { guest: true },
-    },
-  ],
-})
-
-router.beforeEach(async (to) => {
-  const auth = useAuthStore()
-  if (auth.token && !auth.user) {
-    await auth.fetchMe().catch(() => auth.logout())
-  }
-  if (to.meta.requiresAuth && !auth.user) return { name: 'login' }
-  if (to.meta.guest && auth.user) return { name: 'home' }
-})
-```
-
-### `src/shared/api/http.ts` — NEW
-```typescript
-import axios from 'axios'
-
-export const TOKEN_KEY = 'access_token'
-
-export const http = axios.create({
-  baseURL: import.meta.env.VITE_API_URL as string,
-  headers: { 'Content-Type': 'application/json' },
-})
-
-http.interceptors.request.use((config) => {
-  const token = localStorage.getItem(TOKEN_KEY)
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config
-})
-```
-
-### `src/shared/types/index.ts` — NEW
-```typescript
-export type { PublicUser, JwtPayload, AuthResponseDto } from '@app/shared'
-```
-
-### `src/features/auth/api/authApi.ts` — NEW
-```typescript
-import { http } from '@/shared/api/http'
-import type { AuthResponseDto, PublicUser } from '@/shared/types'
-
-export interface LoginDto { email: string; password: string }
-export interface RegisterDto { name: string; email: string; password: string }
-
-export const loginApi = (dto: LoginDto) =>
-  http.post<AuthResponseDto>('/auth/login', dto).then(r => r.data)
-
-export const registerApi = (dto: RegisterDto) =>
-  http.post<AuthResponseDto>('/auth/register', dto).then(r => r.data)
-
-export const getMeApi = () =>
-  http.get<PublicUser>('/auth/me').then(r => r.data)
-```
-
-### `src/features/auth/model/store.ts` — NEW
-```typescript
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import type { PublicUser } from '@/shared/types'
-import { loginApi, registerApi, getMeApi, type LoginDto, type RegisterDto } from '../api/authApi'
-import { TOKEN_KEY } from '@/shared/api/http'
-
-export const useAuthStore = defineStore('auth', () => {
-  const user = ref<PublicUser | null>(null)
-  const token = ref<string | null>(localStorage.getItem(TOKEN_KEY))
-  const loading = ref(false)
-  const error = ref<string | null>(null)
-
-  function setToken(t: string) {
-    token.value = t
-    localStorage.setItem(TOKEN_KEY, t)
-  }
-
-  async function fetchMe() {
-    user.value = await getMeApi()
-  }
-
-  async function loginAction(dto: LoginDto) {
-    loading.value = true; error.value = null
-    try {
-      const { accessToken } = await loginApi(dto)
-      setToken(accessToken)
-      await fetchMe()
-    } catch (e) {
-      error.value = extractMessage(e, 'Неверный email или пароль')
-      throw e
-    } finally { loading.value = false }
-  }
-
-  async function registerAction(dto: RegisterDto) {
-    loading.value = true; error.value = null
-    try {
-      const { accessToken } = await registerApi(dto)
-      setToken(accessToken)
-      await fetchMe()
-    } catch (e) {
-      error.value = extractMessage(e, 'Ошибка регистрации')
-      throw e
-    } finally { loading.value = false }
-  }
-
-  function logout() {
-    user.value = null; token.value = null
-    localStorage.removeItem(TOKEN_KEY)
-  }
-
-  return { user, token, loading, error, fetchMe, loginAction, registerAction, logout }
-})
-
-function extractMessage(e: unknown, fallback: string): string {
-  if (typeof e === 'object' && e !== null && 'response' in e) {
-    const r = (e as { response?: { data?: { message?: string } } }).response
-    return r?.data?.message ?? fallback
-  }
-  return fallback
-}
-```
-
-### `src/features/auth/index.ts` — NEW
-```typescript
-export { useAuthStore } from './model/store'
-export type { LoginDto, RegisterDto } from './api/authApi'
-```
-
-### `src/pages/login/ui/LoginPage.vue` — NEW
-Используем Vuetify-компоненты:
-- `v-container` + `v-row justify="center"` + `v-col` (`cols="12" sm="8" md="5"`)
-- `v-card` с `v-card-title "Вход"`, `v-card-text` с `v-form`
-- Поля: `v-text-field` (email, type="email"), `v-text-field` (пароль, type="password")
-- `v-alert type="error"` при `auth.error`
-- `v-btn color="primary" :loading="auth.loading" type="submit"` — «Войти»
-- Под формой: `RouterLink to="/register"` — «Нет аккаунта? Зарегистрироваться»
-- Валидация через `:rules` массив функций (email required + regex, password required + min 8)
-- При успехе: `router.push({ name: 'home' })`
-
-### `src/pages/register/ui/RegisterPage.vue` — NEW
-Аналогично LoginPage. Дополнительное поле «Имя» (required, min 2). Ссылка на `/login`. При успехе → `/`.
-
-### `src/pages/home/ui/HomePage.vue` — NEW
-- Заголовок `v-card-title`: «Трекер расходов»
-- Приветствие: `Привет, {{ auth.user?.name }}!`
-- `v-btn @click="onLogout"` — «Выйти» (вызывает `auth.logout()` и `router.push({ name: 'login' })`)
-
-### Barrel-экспорты `pages/*/index.ts`
-```typescript
-export { default as LoginPage } from './ui/LoginPage.vue'
-```
-(и аналогично для Register, Home)
-
----
-
-## `CLAUDE.md` — MODIFY
-- Обновить описание `apps/web` (упомянуть FSD-структуру).
-- Добавить секцию **Frontend Architecture (FSD)** с описанием слоёв и правилом «сверху вниз».
-
----
-
-## Проверка
-
-1. `npm install` из корня (подтянет `axios`).
-2. `npm run dev:api` — бэк на :3000.
-3. `npm run dev:web` — фронт на :5173.
-4. `/` без токена → редирект на `/login`.
-5. Регистрация с валидными данными → редирект на `/`, имя в шапке.
-6. Кнопка «Выйти» → `/login`.
-7. Логин с теми же данными → `/`.
-8. Перезагрузка страницы → пользователь восстановлен (по токену из localStorage через `/auth/me`).
-9. Открыть `/login` будучи авторизованным → редирект на `/`.
-10. `npm -w apps/web run build` — ноль ошибок TypeScript.
-
----
-
-## Примечание
-
-Файл плана будет также скопирован в репозиторий: `.claude/plans/auth-pages.md` (перезапишет предыдущую версию). Это соответствует принятому соглашению — хранить планы в репозитории.
+- `PublicUser`, `AuthResponseDto` — `packages/shared/src/auth.ts`
+- `VITE_API_URL` — env-переменная фронта (`.env`)
+- Vuetify компоненты: `v-form`, `v-text-field`, `v-btn`, `v-card`, `v-alert` — autoImport через `vite-plugin-vuetify`
