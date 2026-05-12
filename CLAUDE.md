@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Three workspaces under one root `package.json`:
 
 - **`apps/api`** — NestJS backend. Точка входа `src/main.ts` (CORS + порт из `API_PORT`). `AppModule` подключает `ConfigModule` (глобально) и `PrismaModule`. `PrismaModule` помечен `@Global()` — `PrismaService` (наследник `PrismaClient` с `onModuleInit/onModuleDestroy`) доступен во всех модулях без явного импорта. Prisma-схема в `apps/api/prisma/schema.prisma` (datasource `postgresql`, `DATABASE_URL` из env). Health-endpoint: `GET /health`.
-- **`apps/web`** — Vue 3 + Vite + TS. `src/main.ts` собирает приложение из Pinia + Vue Router + Vuetify, импортирует `assets/main.css` с tailwind-директивами. Алиас `@/*` → `src/*`. Vuetify подключается через `vite-plugin-vuetify` с `autoImport`. Tailwind и Vuetify используются вместе — Tailwind для утилитарной разметки, Vuetify для компонентов.
+- **`apps/web`** — Vue 3 + Vite + TS. `src/main.ts` собирает приложение из Pinia + Vue Router + Vuetify, импортирует `assets/main.css` с tailwind-директивами. Алиасы: `@/*` → `src/*`, `@app/shared` → `packages/shared/src/index.ts`. Vuetify подключается через `vite-plugin-vuetify` с `autoImport`. Архитектура — **Feature Slice Design (FSD)**: слои `shared/`, `features/`, `pages/`, `app/` в `src/`. Tailwind для утилитарной разметки, Vuetify для компонентов.
 - **`packages/shared`** (`@app/shared`) — общие TS-типы/DTO между фронтом и бэком. Сейчас пустой; при добавлении типов импортировать из `@app/shared`, не дублировать определения между `apps/web` и `apps/api`.
 
 PostgreSQL для разработки поднимается через `docker-compose.yml` в корне (image `postgres:16`, креды/имя БД из `.env`, healthcheck по `pg_isready`).
@@ -41,8 +41,25 @@ Run from repo root unless noted. All cross-workspace scripts use `npm -w`.
 - Язык документации/комментариев — русский (см. README, заглушки во views).
 - Платформа разработки — Windows + PowerShell. В Bash-командах учитывать это (например, `cp` доступен через Git Bash; в PS используется `Copy-Item`).
 - Перед добавлением моделей Prisma всегда обновлять `apps/api/prisma/schema.prisma`, затем `npm run prisma:migrate` и `npm run prisma:generate`.
-- Авторизации сейчас нет — добавится отдельной задачей; не вводить заглушки `User` без согласования.
+- Авторизация реализована через JWT (бэк) + Pinia auth store (фронт). Токен хранится в `localStorage` под ключом `access_token`.
+
+## Frontend Architecture (FSD)
+
+`apps/web/src/` организован по [Feature Slice Design](https://feature-sliced.design/):
+
+```
+src/
+  app/        ← инициализация приложения (App.vue)
+  pages/      ← страницы (route-level компоненты)
+  widgets/    ← самодостаточные блоки UI (пока не используется)
+  features/   ← пользовательские сценарии (auth, и т.д.)
+  entities/   ← бизнес-сущности (пока не используется)
+  shared/     ← переиспользуемый код без бизнес-логики (api, types, ui)
+```
+
+**Правило импортов:** слои могут импортировать только из более низких слоёв (`pages` → `features` → `shared`). Внутри слоя — только через публичный `index.ts` сегмента (не лезть в `model/`, `api/`, `ui/` напрямую снаружи).
 
 ## Workflow
 
 - Перед каждой задачей создавать план и хранить его в `.claude/plans/` (в корне репозитория).
+- Каждый план обязан содержать раздел **Чек-лист задач** — задачи с чекбоксами `- [ ]`, сгруппированные по подсекциям (пример: `.claude/plans/auth-pages.md`).

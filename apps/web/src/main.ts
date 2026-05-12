@@ -5,7 +5,7 @@ import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css';
 import './assets/main.css';
 
-import App from './App.vue';
+import App from './app/App.vue';
 import { router } from './router';
 
 const vuetify = createVuetify();

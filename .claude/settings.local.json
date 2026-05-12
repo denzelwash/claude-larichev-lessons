@@ -20,7 +20,14 @@
       "Bash(awk '{print $2}')",
       "Read(//tmp/**)",
       "Bash(python3 *)",
-      "Skill(update-config)"
+      "Skill(update-config)",
+      "Bash(Get-ChildItem -Path \"D:\\\\OpenServer\\\\domains\\\\claude-larichev-lessons\" -Recurse -Depth 2)",
+      "Bash(Select-Object -Property FullName, PSIsContainer)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(Remove-Item \"D:\\\\OpenServer\\\\domains\\\\claude-larichev-lessons\\\\apps\\\\web\\\\src\\\\App.vue\" -Force)",
+      "Bash(Remove-Item \"D:\\\\OpenServer\\\\domains\\\\claude-larichev-lessons\\\\apps\\\\web\\\\src\\\\views\\\\HomeView.vue\" -Force)",
+      "Bash(Remove-Item \"D:\\\\OpenServer\\\\domains\\\\claude-larichev-lessons\\\\apps\\\\web\\\\src\\\\stores\\\\.gitkeep\" -Force)",
+      "Bash(Remove-Item \"D:\\\\OpenServer\\\\domains\\\\claude-larichev-lessons\\\\apps\\\\web\\\\src\\\\components\\\\.gitkeep\" -Force)"
     ]
   },
   "statusLine": {

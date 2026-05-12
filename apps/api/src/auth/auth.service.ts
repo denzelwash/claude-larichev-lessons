@@ -28,7 +28,7 @@ export class AuthService {
     const user = await this.queryBus.execute<ValidateCredentialsQuery, PublicUser | null>(
       new ValidateCredentialsQuery(dto.email, dto.password),
     );
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) throw new UnauthorizedException('Неверный email или пароль');
     return { accessToken: this.sign(user) };
   }
 
