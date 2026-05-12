@@ -42,3 +42,7 @@ Run from repo root unless noted. All cross-workspace scripts use `npm -w`.
 - Платформа разработки — Windows + PowerShell. В Bash-командах учитывать это (например, `cp` доступен через Git Bash; в PS используется `Copy-Item`).
 - Перед добавлением моделей Prisma всегда обновлять `apps/api/prisma/schema.prisma`, затем `npm run prisma:migrate` и `npm run prisma:generate`.
 - Авторизации сейчас нет — добавится отдельной задачей; не вводить заглушки `User` без согласования.
+
+## Workflow
+
+- Перед каждой задачей создавать план и хранить его в `.claude/plans/` (в корне репозитория).
