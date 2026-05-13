@@ -89,6 +89,17 @@ chore: обновить зависимости
 
 Breaking changes: добавить `!` после type/scope или footer `BREAKING CHANGE:`.
 
+## Branching (GitHub Flow)
+
+Работаем по [GitHub Flow](https://docs.github.com/en/get-started/using-github/github-flow):
+
+1. `main` — всегда стабильная ветка; прямые коммиты запрещены.
+2. Каждая фича/фикс — отдельная ветка от `main`.
+3. Именование веток: `<type>/<short-description>` (те же типы, что в Conventional Commits).
+   - Примеры: `feat/dashboard`, `fix/auth-cors`, `refactor/pinia-store`
+4. После завершения работы — Pull Request в `main`; мёрж только после review.
+5. После мёржа ветка удаляется.
+
 ## Workflow
 
 - Перед каждой задачей создавать план и хранить его в `.claude/plans/` (в корне репозитория).
