@@ -1,15 +1,27 @@
 <script setup lang="ts">
 import { useTransactionsStore } from '@/features/transactions';
-import { onMounted } from 'vue';
+import { TransactionForm } from '@/widgets/transaction-form';
+import { onMounted, ref } from 'vue';
 
 const store = useTransactionsStore();
+const dialog = ref(false);
 
 onMounted(() => store.loadRecent(10));
 </script>
 
 <template>
   <v-card elevation="2">
-    <v-card-title class="text-h6">Последние транзакции</v-card-title>
+    <v-card-title class="d-flex align-center">
+      <span class="text-h6">Последние транзакции</span>
+      <v-spacer />
+      <v-btn color="primary" variant="tonal" prepend-icon="mdi-plus" @click="dialog = true">
+        Добавить
+      </v-btn>
+    </v-card-title>
+
+    <v-dialog v-model="dialog" max-width="500">
+      <TransactionForm :key="String(dialog)" @close="dialog = false" @created="dialog = false" />
+    </v-dialog>
 
     <v-card-text v-if="store.loading" class="text-center py-6">
       <v-progress-circular indeterminate color="primary" />
@@ -30,9 +42,10 @@ onMounted(() => store.loadRecent(10));
         :subtitle="tx.description ?? 'Без описания'"
       >
         <template #prepend>
-          <v-icon :color="tx.type === 'income' ? 'success' : 'error'">
-            {{ tx.type === 'income' ? 'mdi-arrow-down-circle' : 'mdi-arrow-up-circle' }}
-          </v-icon>
+          <v-icon
+            :icon="tx.type === 'income' ? 'mdi-arrow-down-circle' : 'mdi-arrow-up-circle'"
+            :color="tx.type === 'income' ? 'success' : 'error'"
+          />
         </template>
 
         <template #title>

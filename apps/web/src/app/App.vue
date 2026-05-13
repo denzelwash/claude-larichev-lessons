@@ -22,7 +22,7 @@ function onLogout() {
 <template>
   <v-app>
     <template v-if="auth.user">
-      <v-navigation-drawer v-model="drawer" permanent>
+      <v-navigation-drawer v-model="drawer">
         <v-list-item title="Трекер расходов" nav class="py-4" />
         <v-divider />
         <v-list density="compact" nav>

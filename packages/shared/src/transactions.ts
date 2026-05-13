@@ -18,3 +18,11 @@ export interface QueryTransactionsParams {
   limit?: number;
   offset?: number;
 }
+
+export interface CreateTransactionInput {
+  amount: number;
+  type: TransactionType;
+  description?: string;
+  date: string;
+  categoryId: string;
+}

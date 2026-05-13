@@ -1,7 +1,7 @@
-import type { TransactionDto } from '@app/shared';
+import type { CreateTransactionInput, TransactionDto } from '@app/shared';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { fetchTransactions } from '../api/transactions.api';
+import { createTransaction, fetchTransactions } from '../api/transactions.api';
 
 export const useTransactionsStore = defineStore('transactions', () => {
   const recent = ref<TransactionDto[]>([]);
@@ -20,5 +20,11 @@ export const useTransactionsStore = defineStore('transactions', () => {
     }
   }
 
-  return { recent, loading, error, loadRecent };
+  async function create(input: CreateTransactionInput): Promise<TransactionDto> {
+    const created = await createTransaction(input);
+    await loadRecent(10);
+    return created;
+  }
+
+  return { recent, loading, error, loadRecent, create };
 });
