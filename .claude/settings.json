@@ -1,8 +1,26 @@
 {
-	"permissions": {
-		"defaultMode": "bypassPermissions",
-		"allow": ["Bash(npm test)", "Bash(git *)"],
-		"deny": ["Bash(git push *)", "Read(**/.env*)"],
-		"ask": ["Bash(git commit *)"]
-	}
+  "permissions": {
+    "defaultMode": "default",
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(npx *)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+      "Bash(git fetch *)",
+      "Bash(gh pr *)",
+      "Bash(gh api *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Read(**/.env*)"
+    ],
+    "ask": [
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ]
+  }
 }
