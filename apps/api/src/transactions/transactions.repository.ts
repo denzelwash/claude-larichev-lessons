@@ -19,10 +19,16 @@ export class TransactionsRepository {
     });
   }
 
-  findAllByUser(userId: string, range?: { gte: Date; lt: Date }): Promise<Transaction[]> {
+  findAllByUser(
+    userId: string,
+    range?: { gte: Date; lt: Date },
+    pagination?: { take?: number; skip?: number },
+  ): Promise<Transaction[]> {
     return this.prisma.transaction.findMany({
       where: { userId, ...(range && { date: range }) },
       orderBy: { date: 'desc' },
+      ...(pagination?.take !== undefined && { take: pagination.take }),
+      ...(pagination?.skip !== undefined && { skip: pagination.skip }),
     });
   }
 
