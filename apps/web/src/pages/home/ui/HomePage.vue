@@ -14,7 +14,7 @@ function onLogout() {
 <template>
   <v-container>
     <v-card elevation="2">
-      <v-card-title class="text-h5">Трекер расходов</v-card-title>
+      <v-card-title class="text-h5">Expense Tracker</v-card-title>
       <v-card-subtitle v-if="auth.user">Привет, {{ auth.user.name }}!</v-card-subtitle>
       <v-card-text class="text-medium-emphasis">
         Здесь будет список расходов.
