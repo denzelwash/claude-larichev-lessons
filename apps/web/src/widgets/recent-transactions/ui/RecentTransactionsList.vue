@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useTransactionsStore } from '@/features/transactions';
-import { TransactionForm } from '@/widgets/transaction-form';
+import { TransactionForm, useTransactionsStore } from '@/features/transactions';
 import { onMounted, ref } from 'vue';
 
 const store = useTransactionsStore();
