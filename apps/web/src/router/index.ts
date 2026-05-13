@@ -23,6 +23,18 @@ export const router = createRouter({
       meta: { guest: true },
     },
     {
+      path: '/transactions',
+      name: 'transactions',
+      component: () => import('@/pages/transactions').then((m) => m.TransactionsPage),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/categories',
+      name: 'categories',
+      component: () => import('@/pages/categories').then((m) => m.CategoriesPage),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/terms',
       name: 'terms',
       component: () => import('@/pages/terms').then((m) => m.TermsPage),

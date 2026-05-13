@@ -27,7 +27,11 @@ export class TransactionsService {
         lt: new Date(query.year, query.month, 1),
       };
     }
-    return this.repository.findAllByUser(userId, range);
+    const pagination = {
+      take: query.limit,
+      skip: query.offset,
+    };
+    return this.repository.findAllByUser(userId, range, pagination);
   }
 
   async findOne(userId: string, id: string): Promise<Transaction> {
