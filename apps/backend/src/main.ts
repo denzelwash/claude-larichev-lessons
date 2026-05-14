@@ -15,20 +15,24 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const config = new DocumentBuilder()
-    .setTitle('Expense Tracker API')
-    .setDescription('API трекера расходов')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Expense Tracker API')
+      .setDescription('API трекера расходов')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+
+    const port = Number(process.env.API_PORT ?? 3000);
+    console.log(`Swagger UI: http://localhost:${port}/api/docs`);
+  }
 
   const port = Number(process.env.API_PORT ?? 3000);
   await app.listen(port);
   console.log(`API listening on http://localhost:${port}`);
-  console.log(`Swagger UI: http://localhost:${port}/api/docs`);
 }
 
 bootstrap();
