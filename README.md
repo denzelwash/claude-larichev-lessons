@@ -32,6 +32,8 @@ npm run dev:api             # backend на http://localhost:3000
 npm run dev:web             # frontend на http://localhost:5173
 ```
 
+Swagger UI доступен по адресу `http://localhost:3000/api/docs` (только в режиме разработки).
+
 ## Скрипты в корне
 
 | Скрипт | Описание |
@@ -39,6 +41,6 @@ npm run dev:web             # frontend на http://localhost:5173
 | `npm run dev:web` | dev-сервер Vue |
 | `npm run dev:api` | dev-сервер Nest |
 | `npm run build:web` / `build:api` | production-сборки |
-| `npm run db:up` / `db:down` | поднять/остановить PostgreSQL в Docker |
+| `npm run db:up` / `db:down` / `db:logs` | поднять/остановить/логи PostgreSQL в Docker |
 | `npm run prisma:generate` | prisma generate в apps/backend |
 | `npm run prisma:migrate` | prisma migrate dev в apps/backend |
