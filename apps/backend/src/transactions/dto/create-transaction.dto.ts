@@ -11,7 +11,7 @@ export class CreateTransactionDto {
   amount: number;
 
   /** Тип транзакции: доход (`INCOME`) или расход (`EXPENSE`). */
-  @ApiProperty({ enum: TransactionType, example: TransactionType.EXPENSE })
+  @ApiProperty({ enum: TransactionType, example: TransactionType.expense })
   @IsEnum(TransactionType)
   type: TransactionType;
 
