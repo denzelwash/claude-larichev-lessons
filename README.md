@@ -5,8 +5,8 @@
 ## Стек
 
 - **Монорепо**: npm workspaces
-- **Frontend** (`apps/web`): Vue 3 + Vite + TypeScript + Pinia + Vue Router + Tailwind CSS + Vuetify
-- **Backend** (`apps/api`): NestJS + TypeScript
+- **Frontend** (`apps/frontend`): Vue 3 + Vite + TypeScript + Pinia + Vue Router + Tailwind CSS + Vuetify
+- **Backend** (`apps/backend`): NestJS + TypeScript
 - **БД / ORM**: PostgreSQL (через Docker Compose) + Prisma
 - **Shared** (`packages/shared`): общие типы / DTO
 
@@ -14,16 +14,14 @@
 
 ```
 apps/
-  web/      Vue-приложение
-  api/      Nest-приложение (Prisma в apps/api/prisma)
+  frontend/   Vue-приложение
+  backend/    Nest-приложение (Prisma в apps/backend/prisma)
 packages/
-  shared/   общие типы между web и api
+  shared/     общие типы между frontend и backend
 docker-compose.yml   PostgreSQL для разработки
 ```
 
-## Первый запуск (после согласования стека)
-
-> Сейчас в репозитории создан **только скелет**. Зависимости не установлены.
+## Первый запуск
 
 ```bash
 cp .env.example .env
@@ -42,5 +40,5 @@ npm run dev:web             # frontend на http://localhost:5173
 | `npm run dev:api` | dev-сервер Nest |
 | `npm run build:web` / `build:api` | production-сборки |
 | `npm run db:up` / `db:down` | поднять/остановить PostgreSQL в Docker |
-| `npm run prisma:generate` | prisma generate в apps/api |
-| `npm run prisma:migrate` | prisma migrate dev в apps/api |
+| `npm run prisma:generate` | prisma generate в apps/backend |
+| `npm run prisma:migrate` | prisma migrate dev в apps/backend |
