@@ -7,6 +7,7 @@
 Точка входа: `src/main.ts` — настраивает CORS (origin из `CORS_ORIGIN`) и запускает сервер на порту `API_PORT`.
 
 `AppModule` подключает:
+
 - `ConfigModule` — глобально, читает `.env` из корня репозитория.
 - `PrismaModule` — помечен `@Global()`, поэтому `PrismaService` доступен во всех модулях без явного импорта в каждый.
 
@@ -18,13 +19,13 @@ Health-endpoint: `GET /health`.
 
 Реализованные модули в `src/`:
 
-| Модуль         | Назначение                        |
-| -------------- | --------------------------------- |
-| `auth`         | регистрация, логин, JWT-токены    |
-| `users`        | управление пользователями         |
-| `categories`   | категории расходов                |
-| `transactions` | транзакции (расходы/доходы)       |
-| `prisma`       | обёртка над Prisma Client         |
+| Модуль         | Назначение                     |
+| -------------- | ------------------------------ |
+| `auth`         | регистрация, логин, JWT-токены |
+| `users`        | управление пользователями      |
+| `categories`   | категории расходов             |
+| `transactions` | транзакции (расходы/доходы)    |
+| `prisma`       | обёртка над Prisma Client      |
 
 ## Prisma
 
@@ -32,6 +33,7 @@ Health-endpoint: `GET /health`.
 Миграции: `prisma/migrations/`.
 
 **Convention:** перед добавлением или изменением модели — обновить `schema.prisma`, затем:
+
 ```
 npm run prisma:migrate   # создаёт и применяет миграцию
 npm run prisma:generate  # обновляет Prisma Client
@@ -42,3 +44,8 @@ npm run prisma:generate  # обновляет Prisma Client
 ## Auth
 
 JWT через `@nestjs/jwt` + Passport (`passport-jwt`). Бэк выдаёт токен при логине и проверяет его через `JwtAuthGuard` на защищённых маршрутах. Токен не хранится на сервере (stateless).
+
+## Документация
+
+После изменения методов — обновляй JSDoc.
+Для DTO и контроллеров — добавляй/обновляй Swagger декораторы.
