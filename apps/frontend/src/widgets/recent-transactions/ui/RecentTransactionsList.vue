@@ -1,64 +1,68 @@
 <script setup lang="ts">
-import { TransactionForm, useTransactionsStore } from '@/features/transactions';
-import { onMounted, ref } from 'vue';
+import { useTransactionsStore } from '@/features/transactions';
+import { onMounted } from 'vue';
 
 const store = useTransactionsStore();
-const dialog = ref(false);
 
 onMounted(() => store.loadRecent(10));
 </script>
 
 <template>
-  <v-card elevation="2">
-    <v-card-title class="d-flex align-center">
-      <span class="text-h6">Последние транзакции</span>
-      <v-spacer />
-      <v-btn color="primary" variant="tonal" prepend-icon="mdi-plus" @click="dialog = true">
-        Добавить
-      </v-btn>
-    </v-card-title>
+  <section class="page-card p-6">
+    <h2 class="text-[15px] font-semibold text-ink mb-5">Последние транзакции</h2>
 
-    <v-dialog v-model="dialog" max-width="500">
-      <TransactionForm :key="String(dialog)" @close="dialog = false" @created="dialog = false" />
-    </v-dialog>
+    <!-- Loading -->
+    <div v-if="store.loading" class="flex justify-center py-8">
+      <v-progress-circular indeterminate color="primary" size="32" />
+    </div>
 
-    <v-card-text v-if="store.loading" class="text-center py-6">
-      <v-progress-circular indeterminate color="primary" />
-    </v-card-text>
-
-    <v-card-text v-else-if="store.error" class="text-error">
+    <!-- Error -->
+    <p v-else-if="store.error" class="text-red-500 text-sm text-center py-4">
       {{ store.error }}
-    </v-card-text>
+    </p>
 
-    <v-card-text v-else-if="store.recent.length === 0" class="text-medium-emphasis text-center py-6">
-      Транзакций пока нет
-    </v-card-text>
+    <!-- Empty -->
+    <div v-else-if="store.recent.length === 0" class="text-center py-10">
+      <div class="w-12 h-12 rounded-full bg-brand-50 flex items-center justify-center mx-auto mb-3">
+        <v-icon icon="mdi-receipt-text-outline" color="#2563EB" size="24" />
+      </div>
+      <p class="text-[13px] text-ink-secondary">Транзакций пока нет</p>
+    </div>
 
-    <v-list v-else lines="two" density="compact">
-      <v-list-item
+    <!-- List -->
+    <ul v-else class="flex flex-col divide-y divide-slate-100">
+      <li
         v-for="tx in store.recent"
         :key="tx.id"
-        :subtitle="tx.description ?? 'Без описания'"
+        class="flex items-center gap-4 py-3.5 first:pt-0 last:pb-0"
       >
-        <template #prepend>
+        <div
+          class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+          :class="tx.type === 'income' ? 'bg-emerald-50' : 'bg-red-50'"
+        >
           <v-icon
-            :icon="tx.type === 'income' ? 'mdi-arrow-down-circle' : 'mdi-arrow-up-circle'"
-            :color="tx.type === 'income' ? 'success' : 'error'"
+            :icon="tx.type === 'income' ? 'mdi-arrow-down-circle-outline' : 'mdi-arrow-up-circle-outline'"
+            :color="tx.type === 'income' ? '#16A34A' : '#DC2626'"
+            size="20"
           />
-        </template>
+        </div>
 
-        <template #title>
-          <span :class="tx.type === 'income' ? 'text-success' : 'text-error'" class="font-weight-medium">
-            {{ tx.type === 'income' ? '+' : '−' }}{{ tx.amount }}
-          </span>
-        </template>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-semibold text-ink truncate">
+            {{ tx.description ?? 'Без описания' }}
+          </p>
+          <p class="text-[11px] text-ink-muted mt-0.5">
+            {{ new Date(tx.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) }}
+          </p>
+        </div>
 
-        <template #append>
-          <span class="text-caption text-medium-emphasis">
-            {{ new Date(tx.date).toLocaleDateString('ru-RU') }}
-          </span>
-        </template>
-      </v-list-item>
-    </v-list>
-  </v-card>
+        <span
+          class="font-display text-[15px] font-semibold flex-shrink-0"
+          :class="tx.type === 'income' ? 'text-emerald-600' : 'text-red-500'"
+        >
+          {{ tx.type === 'income' ? '+' : '−' }}₽{{ Number(tx.amount).toLocaleString('ru-RU') }}
+        </span>
+      </li>
+    </ul>
+  </section>
 </template>
