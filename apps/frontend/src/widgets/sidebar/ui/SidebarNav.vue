@@ -77,7 +77,7 @@ function onLogout() {
       </RouterLink>
 
       <!-- Настройки — disabled placeholder -->
-      <div class="nav-item nav-item--disabled">
+      <div class="nav-item nav-item--disabled" role="menuitem" aria-disabled="true">
         <v-icon icon="mdi-cog-outline" size="20" />
         <span>Настройки</span>
       </div>

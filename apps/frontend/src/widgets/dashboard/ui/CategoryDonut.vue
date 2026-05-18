@@ -8,7 +8,6 @@ const props = defineProps<{
 
 const chartOptions = computed(() => ({
   chart: {
-    type: 'donut',
     fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
     background: 'transparent',
     animations: { enabled: true, easing: 'easeinout', speed: 600 },

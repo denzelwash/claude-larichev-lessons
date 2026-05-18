@@ -7,7 +7,6 @@ const props = defineProps<{
 
 const chartOptions = computed(() => ({
   chart: {
-    type: 'area',
     toolbar: { show: false },
     sparkline: { enabled: false },
     fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',

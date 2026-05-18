@@ -6,8 +6,6 @@ import { RecentTransactionsList } from '@/widgets/recent-transactions';
 import { TransactionForm } from '@/features/transactions';
 
 const dialog = ref(false);
-
-const summary = mockSummary;
 </script>
 
 <template>
@@ -30,27 +28,27 @@ const summary = mockSummary;
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
       <StatCard
         label="Расходы за месяц"
-        :value="`₽${summary.totalMonthlySpend.toLocaleString('ru-RU')}`"
-        :delta="summary.spendingDelta"
+        :value="`₽${mockSummary.totalMonthlySpend.toLocaleString('ru-RU')}`"
+        :delta="mockSummary.spendingDelta"
       />
       <StatCard
         label="Категорий"
-        :value="String(summary.totalCategories)"
+        :value="String(mockSummary.totalCategories)"
       />
       <StatCard
         label="Транзакций"
-        :value="String(summary.totalTransactions)"
-        :delta="summary.transactionsDelta"
+        :value="String(mockSummary.totalTransactions)"
+        :delta="mockSummary.transactionsDelta"
       />
     </div>
 
     <!-- Charts -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 mb-6">
       <div class="lg:col-span-3">
-        <SpendingTrendChart :data="summary.spendingTrend" />
+        <SpendingTrendChart :data="mockSummary.spendingTrend" />
       </div>
       <div class="lg:col-span-2">
-        <CategoryDonut :categories="summary.byCategory" :total="summary.totalMonthlySpend" />
+        <CategoryDonut :categories="mockSummary.byCategory" :total="mockSummary.totalMonthlySpend" />
       </div>
     </div>
 

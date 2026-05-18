@@ -18,7 +18,7 @@
     "pinia": "^2.1.0",
     "vue": "^3.4.0",
     "vue-router": "^4.3.0",
-    "vue3-apexcharts": "^1.4.4",
+    "vue3-apexcharts": "^1.11.1",
     "vuetify": "^3.5.0"
   },
   "devDependencies": {

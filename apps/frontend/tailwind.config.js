@@ -30,16 +30,10 @@ export default {
       },
       borderRadius: {
         card: '20px',
-        sidebar: '0px',
       },
       boxShadow: {
         card: '0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(37,99,235,.10)',
         'card-hover': '0 4px 8px rgba(15,23,42,.06), 0 16px 32px -12px rgba(37,99,235,.16)',
-        sidebar: '2px 0 16px rgba(37,99,235,.06)',
-      },
-      backgroundImage: {
-        'app-shell': 'linear-gradient(160deg, #DAECFF 0%, #EEF5FF 45%, #F5F9FF 100%)',
-        'auth-brand': 'linear-gradient(145deg, #1D4ED8 0%, #2563EB 50%, #3B82F6 100%)',
       },
     },
   },

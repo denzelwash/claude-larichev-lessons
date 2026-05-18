@@ -161,39 +161,3 @@ async function onSubmit() {
     </div>
   </div>
 </template>
-
-<style scoped>
-.auth-shell {
-  display: flex;
-  min-height: 100vh;
-  background: #f5f9ff;
-}
-
-.auth-brand {
-  width: 380px;
-  flex-shrink: 0;
-  background-image: linear-gradient(145deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
-  padding: 40px 36px;
-  display: flex;
-  flex-direction: column;
-}
-
-.auth-form-panel {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
-}
-
-.auth-form-wrap {
-  width: 100%;
-  max-width: 360px;
-}
-
-@media (max-width: 768px) {
-  .auth-brand {
-    display: none;
-  }
-}
-</style>
