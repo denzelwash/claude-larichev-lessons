@@ -1,0 +1,23 @@
+# Пример: feat PR (бэк + фронт)
+
+**Заголовок:** `feat(auth): добавить refresh token`
+
+**Тело:**
+
+```
+## Что сделано
+- Добавлен endpoint `POST /auth/refresh` для обновления access token по refresh token
+- Refresh token сохраняется в httpOnly cookie при логине
+- Фронт автоматически перезапрашивает токен при 401 через axios-интерцептор
+- Pinia auth store обновлён: добавлен метод `refreshToken()`
+
+## API
+- `POST /auth/refresh` — принимает refresh token из cookie, возвращает новый `access_token`
+
+## Чек-лист для ревью
+- [x] типы/DTO в `packages/shared` обновлены
+- [x] фронт и бэк используют типы из `@app/shared`
+- [x] FSD-правило импортов не нарушено
+- [ ] новые маршруты добавлены в роутер
+```
+
