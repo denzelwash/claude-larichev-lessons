@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "default",
     "allow": [
       "Bash(npm run *)",
       "Bash(npm install *)",
@@ -21,6 +20,10 @@
     "ask": [
       "Bash(git commit *)",
       "Bash(git push *)"
-    ]
+    ],
+    "defaultMode": "default"
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
   }
 }
