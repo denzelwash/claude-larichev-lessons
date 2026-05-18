@@ -35,3 +35,12 @@ src/
 ## Auth
 
 Авторизация на фронте — Pinia auth store (`features/auth`). Токен хранится в `localStorage` под ключом `access_token`. Axios-инстанс в `shared/api` подставляет токен в заголовок `Authorization: Bearer`.
+
+## Testing
+
+Раннер: **Vitest** + `jsdom` + `@vue/test-utils`.
+
+- Тесты: `*.spec.ts` рядом с тестируемым файлом.
+- Запуск: `npm -w apps/frontend run test` (или `npm run test:web` из корня).
+- Для `.vue`-компонентов — `mount`/`shallowMount` из `@vue/test-utils`; для Pinia-сторов — `setActivePinia(createPinia())`.
+- Для генерации спеки под конкретный файл: `/test <path-to-file>`.

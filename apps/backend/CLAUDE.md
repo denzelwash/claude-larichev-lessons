@@ -45,6 +45,15 @@ npm run prisma:generate  # обновляет Prisma Client
 
 JWT через `@nestjs/jwt` + Passport (`passport-jwt`). Бэк выдаёт токен при логине и проверяет его через `JwtAuthGuard` на защищённых маршрутах. Токен не хранится на сервере (stateless).
 
+## Testing
+
+Раннер: **Jest** + `ts-jest` + `@nestjs/testing`.
+
+- Тесты: `*.spec.ts` рядом с тестируемым файлом.
+- Запуск: `npm -w apps/backend run test` (или `npm run test:api` из корня).
+- Зависимости мокируются через `jest.fn()` / `jest.spyOn()`; NestJS-модули — через `Test.createTestingModule`.
+- Для генерации спеки под конкретный файл: `/test <path-to-file>`.
+
 ## Документация
 
 После изменения методов — обновляй JSDoc.
