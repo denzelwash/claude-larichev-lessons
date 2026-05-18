@@ -29,6 +29,9 @@ Run from repo root unless noted. All cross-workspace scripts use `npm -w`.
 | `npm run build:api` / `build:web`       | production-сборки                     |
 | `npm run prisma:generate`               | `prisma generate` в `apps/backend`    |
 | `npm run prisma:migrate`                | `prisma migrate dev` в `apps/backend` |
+| `npm test`                              | запуск всех тестов (api + web)        |
+| `npm run test:api`                      | Jest-тесты в `apps/backend`           |
+| `npm run test:web`                      | Vitest-тесты в `apps/frontend`        |
 
 Запуск одиночной команды в конкретном workspace: `npm -w apps/backend run <script>` (напр. `npm -w apps/backend run prisma:studio`).
 
